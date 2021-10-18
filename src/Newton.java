@@ -1,10 +1,10 @@
 public class Newton {
-    private Polynomial p;
-    public Newton(Field f){
+    private final Polynomial _polynomial;
+    public Newton(Field field){
 
-        Point[] array = f.GetArray();
+        Point[] array = field.GetPoints();
         double[] differencesArray = FindDifferences(array);
-        p = new Polynomial(0,array[0].GetY());
+        _polynomial = new Polynomial(0,array[0].GetY());
         Polynomial temp1 = new Polynomial(0,1);
         Polynomial temp2 = new Polynomial(0,1);
         int len = array.length;
@@ -17,7 +17,7 @@ public class Newton {
                 temp1 = temp1.MultiplyPolynomials(temp2);
             }
             temp1.MultiplyWithNumber(differencesArray[i]);
-            p.AddPolynomials(temp1);
+            _polynomial.AddPolynomials(temp1);
             temp1 = new Polynomial(0,1);
             temp2.RewriteMonomial(0,0);
         }
@@ -42,7 +42,7 @@ public class Newton {
         return result;
     }
 
-    public Polynomial GetP() {
-        return p;
+    public Polynomial GetPolynomial() {
+        return _polynomial;
     }
 }

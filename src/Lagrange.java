@@ -1,8 +1,9 @@
 public class Lagrange {
-    Polynomial result;
-    public Lagrange(Field p){
+    private Polynomial _result;
+    
+    public Lagrange(Field polynomial){
 
-        Point[] array = p.GetArray();
+        Point[] array = polynomial.GetPoints();
         int len = array.length;
 
         for (int i = 0; i < len; i ++ ){
@@ -27,12 +28,12 @@ public class Lagrange {
                 p1 = p1.MultiplyPolynomials(p2);
             }
             p1.MultiplyWithNumber(array[i].GetY()/sum);
-            if (i == 0) result = new Polynomial(p1);
-            else result.AddPolynomials(p1);
+            if (i == 0) _result = new Polynomial(p1);
+            else _result.AddPolynomials(p1);
         }
     }
 
     public Polynomial GetPolynomial(){
-        return result;
+        return _result;
     }
 }

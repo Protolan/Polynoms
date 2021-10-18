@@ -1,185 +1,185 @@
 public class Polynomial {
-    private static class node {
-        private int degree;     //polynomial degree
-        private double coefficient;       //coefficient
-        private node next;
-        public node(int d, double c){
-            degree = d;
-            coefficient = c;
-            next = null;
+
+    private static class Node {
+        private int _degree;     //polynomial degree
+        private double _coefficient;       //coefficient
+        private Node _next;
+
+        public Node(int degree, double coefficient) {
+            _degree = degree;
+            _coefficient = coefficient;
+            _next = null;
         }
     }
-    private node head;
+
+    private Node _head;
 
 
-    public Polynomial(int d, double c){
-        head = new node(d, c);
+    public Polynomial(int degree, double coefficient) {
+        _head = new Node(degree, coefficient);
     }
 
-    public Polynomial(Polynomial p1){
-        node mainhead = p1.head;
-        this.head = new node(mainhead.degree, mainhead.coefficient);
-        node temphead = this.head;
-        while (mainhead.next != null){
-            temphead.next = new node(mainhead.degree, mainhead.coefficient);
-            mainhead = mainhead.next;
+    public Polynomial(Polynomial polynomial) {
+        Node mainhead = polynomial._head;
+        this._head = new Node(mainhead._degree, mainhead._coefficient);
+        Node temphead = this._head;
+        while (mainhead._next != null) {
+            temphead._next = new Node(mainhead._degree, mainhead._coefficient);
+            mainhead = mainhead._next;
         }
     }
 
     public void MultiplyWithNumber(double digit) {
         if (IsZero(digit)) {
-            head = new node(1,0);
+            _head = new Node(1, 0);
             return;
         }
-        node temp = this.head;
-        while (temp != null){
-            temp.coefficient = temp.coefficient * digit;
-            temp = temp.next;
+        Node temp = this._head;
+        while (temp != null) {
+            temp._coefficient = temp._coefficient * digit;
+            temp = temp._next;
         }
     }
-    public void AddPolynomials(Polynomial p){
-        if (p.head == null || head == null) return;
-        if ((p.head.coefficient == 0 && p.head.next == null)) return;
-        if (this.head.coefficient == 0 && this.head.next == null) new Polynomial(p);
-        node temp, newP;
-        if (this.head.degree <= p.head.degree) {
-            node tempH = p.head;
-            p.head = this.head;
-            this.head = tempH;
+
+    public void AddPolynomials(Polynomial p) {
+        if (p._head == null || _head == null) return;
+        if ((p._head._coefficient == 0 && p._head._next == null)) return;
+        if (this._head._coefficient == 0 && this._head._next == null) new Polynomial(p);
+        Node temp, newP;
+        if (this._head._degree <= p._head._degree) {
+            Node tempH = p._head;
+            p._head = this._head;
+            this._head = tempH;
         }
-        newP = this.head;
-        temp = p.head;
-        node previous = null;
-        while (temp != null && newP != null){
-            if (IsZero(newP.coefficient)){
-                if (newP.next == null)
+        newP = this._head;
+        temp = p._head;
+        Node previous = null;
+        while (temp != null && newP != null) {
+            if (IsZero(newP._coefficient)) {
+                if (newP._next == null)
                     newP = null;
                 else
-                    RewriteNode(newP, newP.next, newP.coefficient, newP.degree);
+                    RewriteNode(newP, newP._next, newP._coefficient, newP._degree);
                 continue;
             }
 
-            double tempCoef = newP.coefficient + temp.coefficient;
-            if (IsZero(tempCoef) && newP.degree == temp.degree){
-                if (newP.next != null)
-                    RewriteNode(newP, newP.next.next, newP.next.coefficient, newP.next.degree);
+            double tempCoef = newP._coefficient + temp._coefficient;
+            if (IsZero(tempCoef) && newP._degree == temp._degree) {
+                if (newP._next != null)
+                    RewriteNode(newP, newP._next._next, newP._next._coefficient, newP._next._degree);
                 else
                     newP = null;
-                temp = temp.next;
+                temp = temp._next;
                 continue;
             }
 
-            if (newP.degree == temp.degree){
-                newP.coefficient = tempCoef;
+            if (newP._degree == temp._degree) {
+                newP._coefficient = tempCoef;
                 previous = newP;
-                newP = newP.next;
-                temp = temp.next;
-            }
-            else {
-                if (newP.degree > temp.degree) {
+                newP = newP._next;
+                temp = temp._next;
+            } else {
+                if (newP._degree > temp._degree) {
                     previous = newP;
-                    newP = newP.next;
-                }
-                else {
-                    node temp2 = previous.next;
-                    previous.next = temp;
+                    newP = newP._next;
+                } else {
+                    Node temp2 = previous._next;
+                    previous._next = temp;
                     newP = temp2;
-                    temp = temp.next;
+                    temp = temp._next;
                 }
             }
         }
 
 
-        if (newP == null && previous != null) previous.next = temp;
+        if (newP == null && previous != null) previous._next = temp;
     }
 
-    public Polynomial MultiplyPolynomials(Polynomial p){
-        if (p.head == null || head == null) return null;
-        if ((IsZero(p.head.coefficient) && p.head.next == null) || (IsZero(this.head.coefficient) && this.head.next == null)) return new Polynomial(1,0);
-        node head1 = this.head;
-        node head2 = p.head;
-        Polynomial result = new Polynomial(head1.degree + head2.degree, head1.coefficient * head2.coefficient);
-        node head3 = result.head;
-        head2 = head2.next;
+    public Polynomial MultiplyPolynomials(Polynomial p) {
+        if (p._head == null || _head == null) return null;
+        if ((IsZero(p._head._coefficient) && p._head._next == null) || (IsZero(this._head._coefficient) && this._head._next == null))
+            return new Polynomial(1, 0);
+        Node head1 = this._head;
+        Node head2 = p._head;
+        Polynomial result = new Polynomial(head1._degree + head2._degree, head1._coefficient * head2._coefficient);
+        Node head3 = result._head;
+        head2 = head2._next;
 
-        while (head1 != null){
-            if (IsZero(head1.coefficient)){
-                RewriteNode(head1, head1.next.next, head1.coefficient, head1.degree);
+        while (head1 != null) {
+            if (IsZero(head1._coefficient)) {
+                RewriteNode(head1, head1._next._next, head1._coefficient, head1._degree);
                 continue;
             }
-            while (head2 != null){
-                int tempDegree = head1.degree + head2.degree;
-                double tempCoefficient = head1.coefficient * head2.coefficient;
-                if (head3.degree > tempDegree){
-                    head3.next = new node(tempDegree, tempCoefficient);
-                    head3 = head3.next;
+            while (head2 != null) {
+                int tempDegree = head1._degree + head2._degree;
+                double tempCoefficient = head1._coefficient * head2._coefficient;
+                if (head3._degree > tempDegree) {
+                    head3._next = new Node(tempDegree, tempCoefficient);
+                    head3 = head3._next;
+                } else if (head3._degree == tempDegree) {
+                    head3._coefficient += tempCoefficient;
                 }
-                else
-                if (head3.degree == tempDegree){
-                    head3.coefficient += tempCoefficient;
-                }
-                head2 = head2.next;
+                head2 = head2._next;
             }
-            head2 = p.head;
-            head1 = head1.next;
+            head2 = p._head;
+            head1 = head1._next;
         }
         return result;
     }
 
-    public double GetValueAtPoint(double x){
-        node tempHead = this.head;
-        int max_degree = tempHead.degree;
+    public double GetValueAtPoint(double x) {
+        Node tempHead = this._head;
+        int max_degree = tempHead._degree;
         double result = 0;
-        for (int i = max_degree; i > 0; i--){
-            if (tempHead != null && tempHead.degree == i) {
-                result += tempHead.coefficient;
+        for (int i = max_degree; i > 0; i--) {
+            if (tempHead != null && tempHead._degree == i) {
+                result += tempHead._coefficient;
                 result *= x;
-                tempHead = tempHead.next;
-            }
-            else result *= x;
+                tempHead = tempHead._next;
+            } else result *= x;
         }
-        if (tempHead != null && tempHead.degree == 0) result += tempHead.coefficient;
+        if (tempHead != null && tempHead._degree == 0) result += tempHead._coefficient;
         return result;
     }
 
 
-    public void Print(){
-
-        if (this.head == null) return;
-        node temp = this.head;
-        System.out.printf("%15.6E", temp.coefficient);
-        System.out.print(" * X^" + temp.degree);
-        temp = temp.next;
-        while (temp != null){
-            if (IsZero(temp.coefficient)){
-                temp = temp.next;
+    public void Print() {
+        if (this._head == null) return;
+        Node temp = this._head;
+        System.out.printf("%15.6E", temp._coefficient);
+        System.out.print(" * X^" + temp._degree);
+        temp = temp._next;
+        while (temp != null) {
+            if (IsZero(temp._coefficient)) {
+                temp = temp._next;
                 continue;
             }
-            if (temp.coefficient >= 0) System.out.print("   +");
-            System.out.printf("%15.6E", temp.coefficient);
-            if (!IsZero(temp.degree)){
-                if (temp.degree == 1) System.out.print(" * X");
-                else System.out.print(" * X^" + temp.degree);
+            if (temp._coefficient >= 0) System.out.print("   +");
+            System.out.printf("%15.6E", temp._coefficient);
+            if (!IsZero(temp._degree)) {
+                if (temp._degree == 1) System.out.print(" * X");
+                else System.out.print(" * X^" + temp._degree);
             }
-            temp = temp.next;
+            temp = temp._next;
         }
         System.out.println();
     }
 
-    private void RewriteNode(node node1, node next, double c, int d){
-        node1.next = next;
-        node1.degree = d;
-        node1.coefficient = c;
+
+    public void RewriteMonomial(double c, int d) {
+        this._head._coefficient = c;
+        this._head._degree = d;
+        this._head._next = null;
     }
 
-    public void RewriteMonomial(double c, int d){
-        this.head.coefficient = c;
-        this.head.degree = d;
-        this.head.next = null;
+    private void RewriteNode(Node node1, Node next, double c, int d) {
+        node1._next = next;
+        node1._degree = d;
+        node1._coefficient = c;
     }
 
     private boolean IsZero(double x) {
         double epsilon = 1e-5;
-        return(Math.abs(x) <= epsilon);
+        return (Math.abs(x) <= epsilon);
     }
 }
